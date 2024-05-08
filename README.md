@@ -9,7 +9,12 @@
 > Выполняет запрос на указанный адрес и получает json массив вида {1:"one",3:"two",2:"four"}
 > Вернуть ответ со статусом 200 (StatusOk) c этим json в отсортированном и обычном виде
 ```
-curl -X POST -d '{"4":"three","1":"one","3":"two","2":"four"}' http://localhost:3010/redirection
+curl -i -X POST -d '{"4":"three","1":"one","3":"two","2":"four"}' http://localhost:3010/redirection
+//--------------
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Wed, 08 May 2024 16:26:34 GMT
+Content-Length: 112
 { 
     "origin": {"4":"three","1":"one","3":"two","2":"four"}, 
     "sort": {"1":"one","2":"four","3":"two","4":"three"} 
