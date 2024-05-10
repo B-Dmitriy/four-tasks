@@ -67,7 +67,6 @@ func sortBody(body []byte) ([]byte, error) {
 func getHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		w.WriteHeader(http.StatusBadRequest)
-		_, _ = w.Write([]byte("Method unsupported"))
 		return
 	}
 
@@ -76,11 +75,14 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	queryParams, _ := url.ParseQuery(r.URL.RawQuery)
+	queryParams, err := url.ParseQuery(r.URL.RawQuery)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
 	if len(queryParams["token"]) == 0 || queryParams["token"][0] == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		_, _ = w.Write([]byte("need token in query params\n"))
 		return
 	}
 
