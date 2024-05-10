@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 )
 
 /*
@@ -64,10 +65,21 @@ func sortBody(body []byte) ([]byte, error) {
 	return sortedJSONString, nil
 }
 
+// curl -i -X GET "http://localhost:3010/get?first=1&token=123&test=last"
 func getHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = w.Write([]byte("Method unsupported"))
+		return
+	}
+
+	queryParams, _ := url.ParseQuery(r.URL.RawQuery)
+	fmt.Println(queryParams)
+	fmt.Printf("%v", queryParams["token"])
+
+	if r.URL.RawQuery == "" || len(queryParams["token"]) == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte("need token in query params\n"))
 		return
 	}
 }

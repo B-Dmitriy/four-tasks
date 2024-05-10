@@ -23,7 +23,22 @@ Content-Length: 112
 
 **GET /get**  
 > если в параметрах передается token вернуть ответ со статусом 200, в противном случае вернуть статус 400 (BadRequest)
+```
+curl -i -X GET "http://localhost:3010/get?first=1&token=123&test=last"
+//--------------
+HTTP/1.1 200 OK
+Date: Fri, 10 May 2024 14:12:21 GMT
+Content-Length: 0
 
+curl -i -X GET "http://localhost:3010/get?first=1&test=last"
+//--------------
+HTTP/1.1 400 Bad Request
+Date: Fri, 10 May 2024 14:12:03 GMT
+Content-Length: 26
+Content-Type: text/plain; charset=utf-8
+
+need token in query params
+```
 ---
 ### 2. Асинхронное программирование
 Тип программы: скрипт
