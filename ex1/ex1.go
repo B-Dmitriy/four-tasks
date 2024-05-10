@@ -9,11 +9,6 @@ import (
 	"net/url"
 )
 
-/*
-/redirection POST - Выполняет запрос на указанный адрес и получает json массив вида {1:"one",3:"two",2:"four"}
-Вернуть ответ со статусом 200 (StatusOk) c этим json в отсортированном и обычном виде
-/get GET если в параметрах передается token вернуть ответ со статусом 200, в противном случае вернуть статус 400 (BadRequest)
-*/
 func main() {
 	routes := http.NewServeMux()
 
@@ -23,6 +18,8 @@ func main() {
 	log.Fatal(http.ListenAndServe("localhost:3010", routes))
 }
 
+// redirectionHandler - получает json массив вида {1:"one",3:"two",2:"four"}
+// Возвращает ответ со статусом 200 (StatusOk) c этим json в отсортированном и обычном виде
 func redirectionHandler(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -65,7 +62,8 @@ func sortBody(body []byte) ([]byte, error) {
 	return sortedJSONString, nil
 }
 
-// curl -i -X GET "http://localhost:3010/get?first=1&token=123&test=last"
+// getHandler ждёт в параметрах token, если находит - возвращает ответ со статусом 200,
+// в противном случае возвращает статус 400 (BadRequest)
 func getHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		w.WriteHeader(http.StatusBadRequest)
@@ -73,13 +71,18 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	queryParams, _ := url.ParseQuery(r.URL.RawQuery)
-	fmt.Println(queryParams)
-	fmt.Printf("%v", queryParams["token"])
+	if r.URL.RawQuery == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
-	if r.URL.RawQuery == "" || len(queryParams["token"]) == 0 {
+	queryParams, _ := url.ParseQuery(r.URL.RawQuery)
+
+	if len(queryParams["token"]) == 0 || queryParams["token"][0] == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = w.Write([]byte("need token in query params\n"))
 		return
 	}
+
+	w.WriteHeader(http.StatusOK)
 }
