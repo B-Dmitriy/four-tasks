@@ -47,11 +47,7 @@ func main() {
 		}
 	}(ctxWithTimeout)
 
-	for {
-		if even, ok := <-evenCh; ok {
-			fmt.Println(even)
-		} else {
-			return
-		}
+	for even := range evenCh {
+		fmt.Println(even)
 	}
 }
