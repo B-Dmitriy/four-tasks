@@ -16,9 +16,10 @@ func main() {
 	allCh := make(chan int)
 	evenCh := make(chan int)
 
-	ctxWithTimeout, _ := context.WithTimeout(context.Background(), time.Second*4)
+	ctxWithTimeout, cancel := context.WithTimeout(context.Background(), time.Second*4)
+	defer cancel()
 
-	go func() {
+	go func(ctx context.Context) {
 		for {
 			select {
 			case <-time.After(time.Millisecond * 500):
@@ -27,24 +28,24 @@ func main() {
 					evenCh <- count
 				}
 				count++
-			case <-ctxWithTimeout.Done():
+			case <-ctx.Done():
 				close(allCh)
 				close(evenCh)
 				return
 			}
 		}
-	}()
+	}(ctxWithTimeout)
 
-	go func() {
+	go func(ctx context.Context) {
 		for {
 			select {
 			case <-allCh:
 				continue
-			case <-ctxWithTimeout.Done():
+			case <-ctx.Done():
 				return
 			}
 		}
-	}()
+	}(ctxWithTimeout)
 
 	for {
 		if even, ok := <-evenCh; ok {
