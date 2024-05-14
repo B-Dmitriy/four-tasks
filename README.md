@@ -60,6 +60,16 @@ need token in query params
 Маршрутизация:
 
 > /get GET - выполнить запрос к базе данных и вывести все полученные значения в формате json cо статусом 200 (StatusOk)
+```
+curl -i -X GET http://localhost:3020/users
+//--------------
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Tue, 14 May 2024 01:55:21 GMT
+Content-Length: 103
+
+[{"id":1,"name":"Alexandr","age":30},{"id":2,"name":"Egor","age":25},{"id":3,"name":"Julia","age":25}]
+```
 
 ---
 ### 4. Профилирование
