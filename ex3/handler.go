@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-const UserLimit = 10
+const UsersLimit = 10
 
 type User struct {
 	ID   int    `json:"id"`
@@ -14,25 +14,24 @@ type User struct {
 	Age  int    `json:"age"`
 }
 
-type UsersHandler struct {
+type GetHandler struct {
 	db *sql.DB
 }
 
-func newUsersHandler(db *sql.DB) *UsersHandler {
-	return &UsersHandler{
+func newHandler(db *sql.DB) *GetHandler {
+	return &GetHandler{
 		db: db,
 	}
 }
 
-func (u *UsersHandler) getUsersList(w http.ResponseWriter, r *http.Request) {
-	rows, err := u.db.Query("SELECT * FROM users LIMIT ?;", UserLimit)
+func (h *GetHandler) getHandler(w http.ResponseWriter, r *http.Request) {
+	rows, err := h.db.Query("SELECT * FROM users LIMIT ?;", UsersLimit)
 	if err != nil {
 		w.WriteHeader(500)
 		return
 	}
 
-	users := make([]User, 0, UserLimit)
-
+	users := make([]User, 0, UsersLimit)
 	for rows.Next() {
 		u := User{}
 		err = rows.Scan(&u.ID, &u.Name, &u.Age)

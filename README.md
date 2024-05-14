@@ -61,7 +61,7 @@ need token in query params
 
 > /get GET - выполнить запрос к базе данных и вывести все полученные значения в формате json cо статусом 200 (StatusOk)
 ```
-curl -i -X GET http://localhost:3020/users
+curl -i -X GET http://localhost:3020/get
 //--------------
 HTTP/1.1 200 OK
 Content-Type: application/json

@@ -11,11 +11,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	usersHandler := newUsersHandler(db)
+	handler := newHandler(db)
 
 	routes := http.NewServeMux()
 
-	routes.HandleFunc("GET /users", usersHandler.getUsersList)
+	routes.HandleFunc("GET /get", handler.getHandler)
 
 	log.Fatal(http.ListenAndServe("localhost:3020", routes))
 }
